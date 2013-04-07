@@ -68,48 +68,49 @@
 	 */
 	var defaults = {
 		/* CLASSES */
-		stepSelector: '.step'
-		,containerClass: ''
-		,canvasClass: ''
-		,areaClass: ''
-		,notSupportedClass: 'not-supported'
+		stepSelector: '.step',
+		containerClass: '',
+		canvasClass: '',
+		areaClass: '',
+		notSupportedClass: 'not-supported',
 
 		/* CONFIG */
-		,fullscreen: true
+		fullscreen: true,
 
 		/* ANIMATION */
-		,animation: {
-			transformOrigin: 'top left'
-			,transitionProperty: addComma(mapProperty(pfx('transform'))) + addComma(mapProperty(pfx('perspective'))) + 'opacity'
-			,transitionDuration: '1s'
-			,transitionDelay: '500ms'
-			,transitionTimingFunction: 'ease-in-out'
-			,transformStyle: "preserve-3d"
-		}
-		,transitionDuration: 1500
-	};
+	    animation: {
+			transformOrigin: 'top left',
+			transitionProperty: addComma(mapProperty(pfx('transform'))) + addComma(mapProperty(pfx('perspective'))) + 'opacity',
+			transitionDuration: '1s',
+			transitionDelay: '500ms',
+			transitionTimingFunction: 'ease-in-out',
+			transformStyle: "preserve-3d",
+		
+	    transitionDuration: 1500
+	}};
 	var callbacks = {
-		'beforeChange': 1
-		,'beforeInitStep': 1
-		,'initStep': 1
-		,'beforeInit': 1
-		,'afterInit': 1
-		,'beforeDeinit': 1
-		,'afterDeinit': 1
-		,'applyStep': 1
-		,'unapplyStep': 1
-		,'setInactive': 1
-		,'beforeActive': 1
-		,'setActive': 1
-		,'selectInitialStep': 1
-		,'selectPrev': 1
-		,'selectNext': 1
-		,'selectHome': 1
-		,'selectEnd': 1
-		,'idle': 1
-		,'applyTarget': 1
+		'beforeChange': 1,
+		'beforeInitStep': 1,
+		'initStep': 1,
+		'beforeInit': 1,
+		'afterInit': 1,
+		'beforeDeinit': 1,
+	    'afterDeinit': 1,
+		'applyStep': 1,
+		'unapplyStep': 1,
+		'setInactive': 1,
+		'beforeActive': 1,
+		'setActive': 1,
+		'selectInitialStep': 1,
+		'selectPrev': 1,
+		'selectNext': 1,
+		'selectHome': 1,
+		'selectEnd': 1,
+		'idle': 1,
+		'applyTarget': 1
 	};
-	for(var callbackName in callbacks) {
+	
+    for(var callbackName in callbacks) {
 		defaults[callbackName] = [];
 	}
 
@@ -141,18 +142,18 @@
 
 		/*** MEMBER VARS ***/
 
-		var jmpress = $( this )
-			,container = null
-			,area = null
-			,oldStyle = {
-				container: ""
-				,area: ""
-			}
-			,canvas = null
-			,current = null
-			,active = false
-			,activeSubstep = null
-			,activeDelegated = false;
+		var jmpress = $( this ),
+			container = null,
+			area = null,
+			oldStyle = {
+				container: "",
+				area: ""
+			};
+		var	canvas = null,
+			current = null,
+			active = false,
+			activeSubstep = null,
+			activeDelegated = false;
 
 
 		/*** MEMBER FUNCTIONS ***/
@@ -165,19 +166,21 @@
 		 * @param idx number of step
 		 */
 		function doStepInit( element, idx ) {
+            var dataset;
 			var data = dataset( element );
 			var step = {
 				oldStyle: $(element).attr("style") || ""
 			};
 
 			var callbackData = {
-				data: data
-				,stepData: step
+				data: data,
+				stepData: step
 			};
+            var callCallback;
 			callCallback.call(this, 'beforeInitStep', $(element), callbackData);
 			step.delegate = data.delegate;
 			callCallback.call(this, 'initStep', $(element), callbackData);
-
+		
 			$(element).data('stepData', step);
 
 			if ( !$(element).attr('id') ) {
@@ -206,6 +209,7 @@
 		 * @param element
 		 */
 		function doStepReapply( element ) {
+            var callCallback;
 			callCallback.call(this, 'unapplyStep', $(element), {
 				stepData: element.data("stepData")
 			});
@@ -220,9 +224,10 @@
 		 */
 		function deinit() {
 			if ( active ) {
+                var callCallback;
 				callCallback.call(this, 'setInactive', active, {
-					stepData: $(active).data('stepData')
-					,reason: "deinit"
+					stepData: $(active).data('stepData'),
+					reason: "deinit"
 				} );
 			}
 			if (current.jmpressClass) {
@@ -262,6 +267,7 @@
 		 * @param eventData
 		 */
 		function callCallback( callbackName, element, eventData ) {
+            var getStepParents;
 			eventData.settings = settings;
 			eventData.current = current;
 			eventData.container = container;
@@ -286,6 +292,7 @@
 		 * @param String type reason of reselecting step
 		 */
 		function reselect( type ) {
+            var select;
 			return select( { step: active, substep: activeSubstep }, type);
 		}
 		/**
@@ -316,15 +323,16 @@
 			// whenever slide is selected
 			//
 			// If you are reading this and know any better way to handle it, I'll be glad to hear about it!
-			scrollFix.call(this);
+	
+            scrollFix.call(this);
 
 			var step = $(el).data('stepData');
 
 			var cancelSelect = false;
 			callCallback.call(this, "beforeChange", el, {
-				stepData: step
-				,reason: type
-				,cancel: function() {
+				stepData: step,
+				reason: type,
+				cancel: function() {
 					cancelSelect = true;
 				}
 			});
@@ -344,24 +352,24 @@
 			}
 			if ( activeDelegated ) {
 				callCallback.call(this, 'setInactive', activeDelegated, {
-					stepData: $(activeDelegated).data('stepData')
-					,delegatedFrom: active
-					,reason: type
-					,target: target
-					,nextStep: delegated
-					,nextSubstep: substep
-					,nextStepData: step
+					stepData: $(activeDelegated).data('stepData'),
+					delegatedFrom: active,
+					reason: type,
+					target: target,
+					nextStep: delegated,
+					nextSubstep: substep,
+					nextStepData: step
 				} );
 			}
 			var callbackData = {
-				stepData: step
-				,delegatedFrom: el
-				,reason: type
-				,target: target
-				,substep: substep
-				,prevStep: activeDelegated
-				,prevSubstep: activeSubstep
-				,prevStepData: activeDelegated && $(activeDelegated).data('stepData')
+				stepData: step,
+				delegatedFrom: el,
+				reason: type,
+				target: target,
+				substep: substep,
+				prevStep: activeDelegated,
+				prevSubstep: activeSubstep,
+				prevStepData: activeDelegated && $(activeDelegated).data('stepData')
 			};
 			callCallback.call(this, 'beforeActive', delegated, callbackData);
 			callCallback.call(this, 'setActive', delegated, callbackData);
@@ -377,9 +385,9 @@
 			$(jmpress).addClass(current.jmpressDelegatedClass = 'delegating-step-' + $(el).attr('id') );
 
 			callCallback.call(this, "applyTarget", delegated, $.extend({
-				canvas: canvas
-				,area: area
-				,beforeActive: activeDelegated
+				canvas: canvas,
+				area: area,
+				beforeActive: activeDelegated
 			}, callbackData));
 
 			active = el;
@@ -387,8 +395,11 @@
 			activeDelegated = delegated;
 
 			if(current.idleTimeout) {
+                var clearTimeout;
 				clearTimeout(current.idleTimeout);
 			}
+            var idleTimeout, setTimeout;
+
 			current.idleTimeout = setTimeout(function() {
 				callCallback.call(this, 'idle', delegated, callbackData);
 			}, Math.max(1, settings.transitionDuration - 100));
@@ -413,6 +424,7 @@
 							fix();
 						}
 				}
+                var setTimeout;
 				setTimeout(check, 1);
 				setTimeout(check, 10);
 				setTimeout(check, 100);
@@ -434,8 +446,8 @@
 		 */
 		function next() {
 			return select.call(this, callCallback.call(this, 'selectNext', active, {
-				stepData: $(active).data('stepData')
-				,substep: activeSubstep
+				stepData: $(active).data('stepData'),
+				substep: activeSubstep
 			}), "next" );
 		}
 		/**
@@ -445,8 +457,8 @@
 		 */
 		function prev() {
 			return select.call(this, callCallback.call(this, 'selectPrev', active, {
-				stepData: $(active).data('stepData')
-				,substep: activeSubstep
+				stepData: $(active).data('stepData'),
+				substep: activeSubstep
 			}), "prev" );
 		}
 		/**
@@ -476,6 +488,7 @@
 		 * @return Object
 		 */
 		function canvasMod( props ) {
+            var css;
 			css(canvas, props || {});
 			return $(canvas);
 		}
@@ -507,24 +520,24 @@
 		 * PUBLIC METHODS LIST
 		 */
 		jmpress.data("jmpressmethods", {
-			select: select
-			,reselect: reselect
-			,scrollFix: scrollFix
-			,goTo: goTo
-			,next: next
-			,prev: prev
-			,home: home
-			,end: end
-			,canvas: canvasMod
-			,container: function() { return container; }
-			,settings: function() { return settings; }
-			,active: getActive
-			,current: function() { return current; }
-			,fire: fire
-			,init: function(step) {
+			select: select,
+			reselect: reselect,
+			scrollFix: scrollFix,
+			goTo: goTo,
+			next: next,
+			prev: prev,
+			home: home,
+			end: end,
+			canvas: canvasMod,
+			container: function() { return container; },
+			settings: function() { return settings; },
+			active: getActive,
+			current: function() { return current; },
+			fire: fire,
+			init: function(step) {
 				doStepInit.call(this, $(step), current.nextIdNumber++);
-			}
-			,deinit: function(step) {
+		/	}
+			deinit: function(step) {
 				if(step) {
 					doStepDeinit.call(this, $(step));
 				} else {

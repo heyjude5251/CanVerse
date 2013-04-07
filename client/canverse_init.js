@@ -18,6 +18,7 @@ $(document).ready(function() {
   });
   
   var leftStep = step.clone();
+  
   leftStep.text("THE CANVERSE");
   leftStep.attr({
       id: "left",
@@ -77,8 +78,9 @@ $(document).ready(function() {
   
   cube.append(frontStep);
   cube.append(rightStep);
-  cube.append(backStep);
-  cube.append(leftStep);
+ cube.append(leftStep);
+ cube.append(backStep);
+ // cube.append(leftStep);
   cube.append(topStep);
   cube.append(bottomStep);
   
